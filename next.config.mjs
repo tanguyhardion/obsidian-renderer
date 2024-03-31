@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    reactStrictMode: true,
-    basePath: '/obsidian-renderer',
+  reactStrictMode: true,
 };
 
 export default nextConfig;
