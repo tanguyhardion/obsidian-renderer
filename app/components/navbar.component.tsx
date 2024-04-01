@@ -1,12 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { Octokit } from "octokit";
 import Markdown from "react-markdown";
 import wikiLinkPlugin from "remark-wiki-link";
+import TreeMenu, { ItemComponent } from "react-simple-tree-menu";
 
-import { isUriEncoded } from "@utils/uri";
 import styles from "./navbar.module.sass";
+import { isUriEncoded } from "@utils/uri";
+import downArrowImg from "@icons/down-arrow.png";
+import rightArrowImg from "@icons/right-arrow.png";
 
 interface NavbarProps {
   children: React.ReactNode;
@@ -31,21 +35,54 @@ interface GitFile {
 }
 
 export function Navbar({ children }: NavbarProps) {
-  const [organizedFiles, setOrganizedFiles] = useState({});
+  const iconStyle = {
+    verticalAlign: "-2px",
+  };
+
+  const downArrow = <Image src={downArrowImg} alt="-" style={iconStyle} />;
+  const rightArrow = <Image src={rightArrowImg} alt="+" style={iconStyle} />;
+
+  const [treeData, setTreeData] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
       const files = await getFiles("", []);
       const organizedFilesData = organizeFiles(files);
-      setOrganizedFiles(organizedFilesData);
+      setTreeData(organizedFilesData);
     };
 
     fetchData();
   }, []);
 
+  let openNodes: string[] = [];
+
   return (
-    <main className={styles.main}>
-      <pre>{JSON.stringify(organizedFiles, null, 2)}</pre>
+    <main>
+      {/* <pre>{JSON.stringify(treeData, null, 2)}</pre> */}
+      <TreeMenu
+        data={treeData}
+        onClickItem={({ key, label, ...props }) => {
+          if (!props.content) {
+            openNodes.includes(key)
+              ? openNodes.splice(openNodes.indexOf(key), 1)
+              : openNodes.push(key);
+          }
+        }}
+        openNodes={openNodes}
+      >
+        {({ items }) => (
+          <ul className="tree-item-group">
+            {items.map(({ key, ...props }) => (
+              <ItemComponent
+                key={key}
+                {...props}
+                openedIcon={downArrow}
+                closedIcon={rightArrow}
+              />
+            ))}
+          </ul>
+        )}
+      </TreeMenu>
     </main>
   );
 }
@@ -98,29 +135,32 @@ async function getFiles(path: string, elements: GitFile[]): Promise<GitFile[]> {
 }
 
 function organizeFiles(files: GitFile[]): Record<string, any> {
-  const organizedFiles: Record<string, any> = {};
+  const treeData: Record<string, any> = {};
 
   files.forEach((file) => {
     const pathParts = file.path.split("/");
-    let currentLevel = organizedFiles;
+    let currentLevel = treeData;
 
     pathParts.forEach((part, index) => {
+      if (!currentLevel[part]) {
+        currentLevel[part] = {
+          label: part.replace(".md", ""),
+          index,
+          nodes: {},
+        };
+      }
+
       if (index === pathParts.length - 1) {
         // file if it's the last part of the path
-        if (!currentLevel[part]) {
-          currentLevel[part] = file.content;
-        }
+        currentLevel[part].content = file.content;
       } else {
         // folder if it's not the last part of the path
-        if (!currentLevel[part]) {
-          currentLevel[part] = {};
-        }
-        currentLevel = currentLevel[part];
+        currentLevel = currentLevel[part].nodes;
       }
     });
   });
 
-  return organizedFiles;
+  return treeData;
 }
 
 /* <div key={index}>

@@ -13,6 +13,7 @@
 html, body
   max-width: 100vw
   overflow-x: hidden
+  color-scheme: dark
 
   p, hr
     margin-bottom: 1rem
@@ -20,6 +21,45 @@ html, body
 a
   color: var(--link-color)
 
-@media (prefers-color-scheme: dark)
-  html
-    color-scheme: dark
+// Tree styling
+.rstm-toggle-icon
+  display: inline-block
+  filter: invert(0.3)
+
+.rstm-toggle-icon-symbol
+  width: 2rem
+  height: 2rem
+  text-align: center
+  line-height: 2rem
+
+.rstm-tree-item-group
+  list-style-type: none
+  padding-left: 0
+  border-top: 1px solid #ccc
+  text-align: left
+  width: 100%
+
+.rstm-tree-item
+  padding: 0.75rem 1rem
+  cursor: pointer
+  color: #909090
+  background: none
+  border-bottom: 1px solid #ccc
+  box-shadow: none
+  z-index: unset
+  position: relative
+  user-select: none
+
+  &--active
+    color: white
+    background: #179ed3
+    border-bottom: none
+
+    &--focused
+      box-shadow: 0 0 5px 0 #222
+      z-index: 999
+
+.rstm-search
+  padding: 1rem 1.5rem
+  border: none
+  width: 100%

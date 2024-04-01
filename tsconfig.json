@@ -15,12 +15,16 @@
     "plugins": [
       {
         "name": "next"
+      },
+      {
+        "name": "styled-jsx/babel"
       }
     ],
     "paths": {
       "@/*": ["./*"],
       "@components/*": ["./app/components/*"],
       "@utils/*": ["./app/utils/*"],
+      "@icons/*": ["./public/icons/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
