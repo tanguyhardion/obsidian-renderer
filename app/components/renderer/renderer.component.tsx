@@ -6,20 +6,25 @@ interface RendererProps {
 }
 
 export function Renderer({ content }: RendererProps) {
+  const regex = /\[\[(.*?)\|(.*?)\]\]/;
+
+  // replace `|` used by Obsidian with `:` used by remark-wiki-link
+  content = content.replace(regex, "[[$1:$2]]");
+
   return (
-	<Markdown
-	  remarkPlugins={[
-		[
-		  wikiLinkPlugin,
-		  {
-			hrefTemplate: (link: any) => {
-			  return `/${link}`;
-			},
-		  },
-		],
-	  ]}
-	>
-	  {content}
-	</Markdown>
+    <Markdown
+      remarkPlugins={[
+        [
+          wikiLinkPlugin,
+          {
+            hrefTemplate: (link: any) => {
+              return `/${link}`;
+            },
+          },
+        ],
+      ]}
+    >
+      {content}
+    </Markdown>
   );
 }

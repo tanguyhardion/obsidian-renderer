@@ -28,8 +28,14 @@ export default function Home() {
         <Tree onItemSelected={handleItemSelected} />
       </div>
       <div className={styles.renderer}>
-        <h1 className={styles.label}>{selectedItem.label}</h1>
-        <Renderer content={selectedItem.content} />
+        {selectedItem.label || selectedItem.content ? (
+          <>
+            <h1 className={styles.label}>{selectedItem.label}</h1>
+            <Renderer content={selectedItem.content} />
+          </>
+        ) : (
+          <p className={styles.noitem}>No item selected</p>
+        )}
       </div>
     </main>
   );

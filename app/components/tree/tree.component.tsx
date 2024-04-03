@@ -59,12 +59,12 @@ export function Tree({ onItemSelected }: TreeProps) {
       <TreeMenu
         data={treeData}
         onClickItem={({ key, label, ...props }) => {
-          onItemSelected({ label: label, content: props.content });
-          /* if (!props.content) {
-            openNodes.includes(key)
+          if (props.content) {
+            onItemSelected({ label: label, content: props.content });
+            /* openNodes.includes(key)
               ? openNodes.splice(openNodes.indexOf(key), 1)
-              : openNodes.push(key);
-          }*/
+              : openNodes.push(key); */
+          }
         }}
       >
         {({ items }) => (
