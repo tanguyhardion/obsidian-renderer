@@ -1,10 +1,3 @@
-:root
-  --link-color: #007bff
-
-@media (prefers-color-scheme: dark)
-  :root
-    --link-color: #0d6efd
-
 *
   box-sizing: border-box
   padding: 0
@@ -15,16 +8,47 @@ html, body
   overflow-x: hidden
   color-scheme: dark
 
-  p, hr
-    margin-bottom: 1rem
+p, hr
+  margin-bottom: 1rem
 
 a
-  color: var(--link-color)
+  text-decoration: none
+
+h1
+  margin-bottom: 24px
+
+h2
+  margin-bottom: 20px
+
+h3
+  margin-bottom: 16px
+
+h4
+  margin-bottom: 12px
+
+h5
+  margin-bottom: 8px
+
+h6
+  margin-bottom: 4px
+
+li
+  margin-bottom: 8px
+
+// Scrollbar styling
+::-webkit-scrollbar
+  width: 16px
+
+::-webkit-scrollbar-thumb
+  border: 4px solid rgba(0, 0, 0, 0)
+  background-clip: padding-box
+  border-radius: 10px
+  background-color: #363636
 
 // Tree styling
 .rstm-toggle-icon
   display: inline-block
-  filter: invert(0.3)
+  filter: invert(0.4)
 
 .rstm-toggle-icon-symbol
   width: 2rem
@@ -34,30 +58,26 @@ a
 
 .rstm-tree-item-group
   list-style-type: none
-  padding-left: 0
-  border-top: 1px solid #ccc
   text-align: left
-  width: 100%
 
 .rstm-tree-item
+  font-size: 15px
   padding: 0.75rem 1rem
   cursor: pointer
   color: #909090
   background: none
-  border-bottom: 1px solid #ccc
-  box-shadow: none
-  z-index: unset
   position: relative
   user-select: none
+  border-radius: 8px
+  margin: 0.25rem 0
+
+  &:hover
+    background: #363636
 
   &--active
     color: white
-    background: #179ed3
+    background: #363636
     border-bottom: none
-
-    &--focused
-      box-shadow: 0 0 5px 0 #222
-      z-index: 999
 
 .rstm-search
   padding: 1rem 1.5rem

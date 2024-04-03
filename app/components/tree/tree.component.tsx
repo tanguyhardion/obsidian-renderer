@@ -2,18 +2,22 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Octokit } from "octokit";
-import Markdown from "react-markdown";
-import wikiLinkPlugin from "remark-wiki-link";
+import Link from "next/link";
 import TreeMenu, { ItemComponent } from "react-simple-tree-menu";
+import { Octokit } from "octokit";
 
-import styles from "./navbar.module.sass";
 import { isUriEncoded } from "@utils/uri";
 import downArrowImg from "@icons/down-arrow.png";
 import rightArrowImg from "@icons/right-arrow.png";
 
-interface NavbarProps {
-  children: React.ReactNode;
+interface TreeProps {
+  onItemSelected: ({
+    label,
+    content,
+  }: {
+    label: string;
+    content: string;
+  }) => void;
 }
 
 interface GitFile {
@@ -34,13 +38,9 @@ interface GitFile {
   };
 }
 
-export function Navbar({ children }: NavbarProps) {
-  const iconStyle = {
-    verticalAlign: "-2px",
-  };
-
-  const downArrow = <Image src={downArrowImg} alt="-" style={iconStyle} />;
-  const rightArrow = <Image src={rightArrowImg} alt="+" style={iconStyle} />;
+export function Tree({ onItemSelected }: TreeProps) {
+  const downArrow = <Image src={downArrowImg} alt="-" />;
+  const rightArrow = <Image src={rightArrowImg} alt="+" />;
 
   const [treeData, setTreeData] = useState({});
 
@@ -54,21 +54,18 @@ export function Navbar({ children }: NavbarProps) {
     fetchData();
   }, []);
 
-  let openNodes: string[] = [];
-
   return (
     <main>
-      {/* <pre>{JSON.stringify(treeData, null, 2)}</pre> */}
       <TreeMenu
         data={treeData}
         onClickItem={({ key, label, ...props }) => {
-          if (!props.content) {
+          onItemSelected({ label: label, content: props.content });
+          /* if (!props.content) {
             openNodes.includes(key)
               ? openNodes.splice(openNodes.indexOf(key), 1)
               : openNodes.push(key);
-          }
+          }*/
         }}
-        openNodes={openNodes}
       >
         {({ items }) => (
           <ul className="tree-item-group">
@@ -86,6 +83,28 @@ export function Navbar({ children }: NavbarProps) {
     </main>
   );
 }
+
+/*
+<div key={key}>
+  {props.content ? (
+    <Link key={key} href={`/${key}`}>
+      <ItemComponent
+        key={key}
+        {...props}
+        openedIcon={downArrow}
+        closedIcon={rightArrow}
+      />
+    </Link>
+  ) : (
+    <ItemComponent
+      key={key}
+      {...props}
+      openedIcon={downArrow}
+      closedIcon={rightArrow}
+    />
+  )}
+</div>
+*/
 
 async function getFiles(path: string, elements: GitFile[]): Promise<GitFile[]> {
   const octokit = new Octokit({
