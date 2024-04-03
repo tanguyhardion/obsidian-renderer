@@ -9,7 +9,7 @@ export function Renderer({ content }: RendererProps) {
   const regex = /\[\[(.*?)\|(.*?)\]\]/;
 
   // replace `|` used by Obsidian with `:` used by remark-wiki-link
-  content = content.replace(regex, "[[$1:$2]]");
+  content = content.replaceAll(regex, "[[$1:$2]]");
 
   return (
     <Markdown
