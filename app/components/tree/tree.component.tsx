@@ -6,7 +6,6 @@ import Link from "next/link";
 import TreeMenu, { ItemComponent } from "react-simple-tree-menu";
 import { Octokit } from "octokit";
 
-import { isUriEncoded } from "@utils/uri";
 import downArrowImg from "@icons/down-arrow.png";
 import rightArrowImg from "@icons/right-arrow.png";
 
@@ -128,13 +127,15 @@ async function getFiles(path: string, elements: GitFile[]): Promise<GitFile[]> {
         try {
           if (!element.download_url) continue;
 
-          if (!isUriEncoded(element.download_url)) {
-            element.download_url = encodeURI(element.download_url);
-          }
+          let url = element.html_url;
+          let encodedUrl = url
+            ?.replace(
+              "https://github.com/",
+              "https://raw.githubusercontent.com/"
+            )
+            .replace("/blob/", "/");
 
-          const fileContentResponse = await octokit.request(
-            "GET " + element.download_url
-          );
+          const fileContentResponse = await octokit.request("GET " + encodedUrl);
 
           if (fileContentResponse.data && element.name.endsWith(".md")) {
             elements.push({
