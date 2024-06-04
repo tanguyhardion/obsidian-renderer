@@ -1,13 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import TreeMenu, { ItemComponent } from "react-simple-tree-menu";
 import { Octokit } from "octokit";
+import { SpinnerCircularFixed } from "spinners-react";
 
 import downArrowImg from "@icons/down-arrow.png";
 import rightArrowImg from "@icons/right-arrow.png";
+
+import styles from "./tree.module.sass";
 
 interface TreeProps {
   onItemSelected: ({
@@ -42,68 +45,51 @@ export function Tree({ onItemSelected }: TreeProps) {
   const rightArrow = <Image src={rightArrowImg} alt="+" />;
 
   const [treeData, setTreeData] = useState({});
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const files = await getFiles("", []);
-      const organizedFilesData = organizeFiles(files);
-      setTreeData(organizedFilesData);
-    };
-
-    fetchData();
+  const fetchData = useCallback(async () => {
+    const files = await getFiles("", []);
+    const organizedFilesData = organizeFiles(files);
+    setTreeData(organizedFilesData);
+    setLoading(false);
   }, []);
 
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
   return (
-    <main>
-      <TreeMenu
-        data={treeData}
-        onClickItem={({ key, label, ...props }) => {
-          if (props.content) {
-            onItemSelected({ label: label, content: props.content });
-            /* openNodes.includes(key)
-              ? openNodes.splice(openNodes.indexOf(key), 1)
-              : openNodes.push(key); */
-          }
-        }}
-      >
-        {({ items }) => (
-          <ul className="tree-item-group">
-            {items.map(({ key, ...props }) => (
-              <ItemComponent
-                key={key}
-                {...props}
-                openedIcon={downArrow}
-                closedIcon={rightArrow}
-              />
-            ))}
-          </ul>
-        )}
-      </TreeMenu>
-    </main>
+    <div className={styles.tree}>
+      {loading ? (
+        <div className={styles.centered}>
+          <SpinnerCircularFixed color="#808080" />
+        </div>
+      ) : (
+        <TreeMenu
+          data={treeData}
+          onClickItem={({ key, label, ...props }) => {
+            if (props.content) {
+              onItemSelected({ label: label, content: props.content });
+            }
+          }}
+        >
+          {({ items }) => (
+            <ul className="tree-item-group">
+              {items.map(({ key, ...props }) => (
+                <ItemComponent
+                  key={key}
+                  {...props}
+                  openedIcon={downArrow}
+                  closedIcon={rightArrow}
+                />
+              ))}
+            </ul>
+          )}
+        </TreeMenu>
+      )}
+    </div>
   );
 }
-
-/*
-<div key={key}>
-  {props.content ? (
-    <Link key={key} href={`/${key}`}>
-      <ItemComponent
-        key={key}
-        {...props}
-        openedIcon={downArrow}
-        closedIcon={rightArrow}
-      />
-    </Link>
-  ) : (
-    <ItemComponent
-      key={key}
-      {...props}
-      openedIcon={downArrow}
-      closedIcon={rightArrow}
-    />
-  )}
-</div>
-*/
 
 async function getFiles(path: string, elements: GitFile[]): Promise<GitFile[]> {
   const octokit = new Octokit({
@@ -120,12 +106,12 @@ async function getFiles(path: string, elements: GitFile[]): Promise<GitFile[]> {
   );
 
   if (Array.isArray(response.data)) {
-    for (const element of response.data) {
+    const filePromises = response.data.map(async (element) => {
       if (element.type === "dir") {
-        await getFiles(element.path, elements);
+        return getFiles(element.path, elements);
       } else {
         try {
-          if (!element.download_url) continue;
+          if (!element.download_url) return;
 
           let url = element.html_url;
           let encodedUrl = url
@@ -135,7 +121,9 @@ async function getFiles(path: string, elements: GitFile[]): Promise<GitFile[]> {
             )
             .replace("/blob/", "/");
 
-          const fileContentResponse = await octokit.request("GET " + encodedUrl);
+          const fileContentResponse = await octokit.request(
+            "GET " + encodedUrl
+          );
 
           if (fileContentResponse.data && element.name.endsWith(".md")) {
             elements.push({
@@ -148,7 +136,9 @@ async function getFiles(path: string, elements: GitFile[]): Promise<GitFile[]> {
           console.error(e);
         }
       }
-    }
+    });
+
+    await Promise.all(filePromises);
   }
 
   return elements;
@@ -182,27 +172,3 @@ function organizeFiles(files: GitFile[]): Record<string, any> {
 
   return treeData;
 }
-
-/* <div key={index}>
-  <h2>{folderName}</h2>
-  {files.map((file, fileIndex) => (
-    <div key={index}>
-      <h3>{file.name.replace(".md", "")}</h3>
-      <Markdown
-        key={fileIndex}
-        remarkPlugins={[
-          [
-            wikiLinkPlugin,
-            {
-              hrefTemplate: (link: any) => {
-                return `/${folderName}/${link}`;
-              },
-            },
-          ],
-        ]}
-      >
-        {file.content}
-      </Markdown>
-    </div>
-  ))}
-</div> */
