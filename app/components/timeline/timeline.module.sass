@@ -1,0 +1,92 @@
+.timeline
+  display: grid
+  grid-template-columns: auto auto 1fr
+  column-gap: 1.5rem
+  margin: 2.3rem 0
+  position: relative
+
+  &::before
+    content: ''
+    height: 100%
+    width: 0.5rem
+    grid-column: 2 / span 1
+    grid-row-start: 1
+    grid-row-end: span 1000
+    background-color: white
+    opacity: 0.15
+    position: absolute
+    left: 1.5rem
+
+.event
+  display: contents
+
+.date
+  grid-column: 1
+  position: relative
+  justify-self: right
+  text-align: right
+  padding: 0.65em 0
+
+  &::before, &::after
+    content: ' '
+    position: absolute
+    height: 100%
+    width: 0.5rem
+    right: -2rem
+    top: 0
+
+  &::before
+    background-color: #1c1b1d
+
+  &::after
+    background-color: white
+    opacity: 0.25
+
+  &::before
+    background: #a68af9
+    height: 0.5rem
+    width: 0.5rem
+    border: 0.5rem solid #1c1b1d
+    right: -2.5rem
+    top: 50%
+    transform: translateY(-50%)
+    border-radius: 50%
+
+  &::after
+    background: transparent
+
+.content
+  grid-column: 3
+  position: relative
+  margin-bottom: 4.5rem
+  padding-top: 0.65em
+
+  &::after
+    content: ' '
+    position: absolute
+    border-bottom: 0.1rem dashed white
+    opacity: 0.1
+    width: 100%
+    height: 2.25rem
+
+  &:last-child
+    margin-bottom: 0.65em
+
+  &:last-child::after
+    display: none
+
+.title
+  position: relative
+  background: #a68af9
+  padding-left: 1.5rem
+  padding-right: 1.5rem
+  margin-left: 1rem
+  &::before
+    content: ''
+    position: absolute
+    width: calc(1rem + 1rem)
+    background: #a68af9
+    top: 0
+    bottom: 0
+    left: -1rem
+    clip-path: polygon(1rem 0, 100% 0, 100% 100%, 1rem 100%, 0 50%)
