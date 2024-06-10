@@ -11,7 +11,7 @@ export const parseTimeline = (text: string): TimelineEvent[] => {
   let match;
   while ((match = eventRegex.exec(text)) !== null) {
       const [, date, title, content] = match;
-      events.push({ date, title, content });
+      events.push({ date: date.replace("<br>", " "), title, content });
   }
 
   return events;

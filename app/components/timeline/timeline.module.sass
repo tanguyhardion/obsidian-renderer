@@ -1,92 +1,75 @@
 .timeline
-  display: grid
-  grid-template-columns: auto auto 1fr
-  column-gap: 1.5rem
-  margin: 2.3rem 0
+  border-left: 4px solid #a68af9
+  border-bottom-right-radius: 4px
+  border-top-right-radius: 4px
+  background: rgba(255, 255, 255, 0.03)
+  color: rgba(255, 255, 255, 0.8)
+  font-family: 'Chivo', sans-serif
+  margin: 50px auto
+  letter-spacing: 0.5px
+  position: relative
+  line-height: 1.4em
+  font-size: 1.03em
+  padding: 50px
+  list-style: none
+  text-align: left
+  font-weight: 100
+  max-width: 95%
+
+.timeline .event
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.1)
+  padding-bottom: 25px
+  margin-bottom: 50px
   position: relative
 
-  &::before
-    content: ''
-    height: 100%
-    width: 0.5rem
-    grid-column: 2 / span 1
-    grid-row-start: 1
-    grid-row-end: span 1000
-    background-color: white
-    opacity: 0.15
-    position: absolute
-    left: 1.5rem
+  &:last-of-type
+    padding-bottom: 0
+    margin-bottom: 0
+    border: none
 
-.event
-  display: contents
+.timeline .event:before,
+.timeline .event:after
+  position: absolute
+  display: block
+  top: 0
 
-.date
-  grid-column: 1
-  position: relative
-  justify-self: right
+.timeline .event div
+
+.timeline .event:before
+  left: -217.5px
+  color: rgba(255, 255, 255, 0.4)
   text-align: right
-  padding: 0.65em 0
+  font-weight: 100
+  font-size: 0.9em
+  min-width: 120px
+  font-family: 'Saira', sans-serif
 
-  &::before, &::after
-    content: ' '
-    position: absolute
-    height: 100%
-    width: 0.5rem
-    right: -2rem
-    top: 0
+.timeline .event:after
+  box-shadow: 0 0 0 4px #a68af9
+  left: -57.85px
+  background: #313534
+  border-radius: 50%
+  height: 11px
+  width: 11px
+  content: ""
+  top: 5px
 
-  &::before
-    background-color: #1c1b1d
+.timeline .event .date
+  position: absolute
+  left: -217.5px
+  color: rgba(255, 255, 255, 0.4)
+  text-align: right
+  font-weight: 100
+  font-size: 0.9em
+  min-width: 120px
+  font-family: 'Saira', sans-serif
 
   &::after
-    background-color: white
-    opacity: 0.25
-
-  &::before
-    background: #a68af9
-    height: 0.5rem
-    width: 0.5rem
-    border: 0.5rem solid #1c1b1d
-    right: -2.5rem
-    top: 50%
-    transform: translateY(-50%)
+    box-shadow: 0 0 0 4px #a68af9
+    left: 160px
+    background: #313534
     border-radius: 50%
-
-  &::after
-    background: transparent
-
-.content
-  grid-column: 3
-  position: relative
-  margin-bottom: 4.5rem
-  padding-top: 0.65em
-
-  &::after
-    content: ' '
-    position: absolute
-    border-bottom: 0.1rem dashed white
-    opacity: 0.1
-    width: 100%
-    height: 2.25rem
-
-  &:last-child
-    margin-bottom: 0.65em
-
-  &:last-child::after
-    display: none
-
-.title
-  position: relative
-  background: #a68af9
-  padding-left: 1.5rem
-  padding-right: 1.5rem
-  margin-left: 1rem
-  &::before
-    content: ''
-    position: absolute
-    width: calc(1rem + 1rem)
-    background: #a68af9
-    top: 0
-    bottom: 0
-    left: -1rem
-    clip-path: polygon(1rem 0, 100% 0, 100% 100%, 1rem 100%, 0 50%)
+    height: 11px
+    width: 11px
+    content: ""
+    top: 5px
